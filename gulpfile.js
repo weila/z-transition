@@ -10,6 +10,8 @@ gulp.task('minifyjs', function() {
         .pipe(gulp.dest('js/min'));  //输出
 });
 
-gulp.task('clean', function(cb) {
-    del('js/min', cb)
+gulp.task('clean', function(cd) {
+    del('js/min', cd)
 });
+
+gulp.task('default', ['minifyjs', 'clean']);

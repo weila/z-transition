@@ -3,6 +3,8 @@ $.fn.zFrameAnimate = function(options){
 /***默认的选项值***<Default option arguments!>***/
     var property = $.extend({
         'action': 'click',
+        'toggler': 'self',
+        'reseter': '',
         'style': 'preserve-3d',
         'origin': 'center',
         'perspective': '1000px',
@@ -14,72 +16,9 @@ $.fn.zFrameAnimate = function(options){
             'function': 'linear',
             'delay': '0'
         },
-        'transform':{
-            'translateZ': '',
-            'translateY': '',
-            'translateX': '',
-            'translate3d': '',
-            'translate': '',
-            'scaleZ': '',
-            'scaleY': '',
-            'scaleX': '',
-            'scale3d': '',
-            'scale': '',
-            'rotateZ': '',
-            'rotateY': '',
-            'rotateX': '',
-            'rotate3d': '',
-            'rotate': '',
-            'skewY': '',
-            'skewX': '',
-            'skew': ''},
-        'css':{
-            'backgroundColor': '',
-            'backgroundPosition': '',
-            'borderBottomColor': '',
-            'borderBottomWidth': '',
-            'borderLeftColor': '',
-            'borderLeftWidth': '',
-            'borderRightColor': '',
-            'borderRightWidth': '',
-            'borderTopColor': '',
-            'borderTopWidth': '',
-            'bottom': '',
-            'clip': '',
-            'color': '',
-            'fontSize': '',
-            'fontWeight': '',
-            'height': '',
-            'left': '',
-            'letterSpacing': '',
-            'lineHeight': '',
-            'marginBottom': '',
-            'marginLeft': '',
-            'marginRight': '',
-            'marginTop': '',
-            'maxHeight': '',
-            'maxWidth': '',
-            'minHeight': '',
-            'minWidth': '',
-            'opacity': '',
-            'outlineColor': '',
-            'outlineWidth': '',
-            'paddingBottom': '',
-            'paddingLeft': '',
-            'paddingRight': '',
-            'paddingTop': '',
-            'right': '',
-            'textIndent': '',
-            'textShadow': '',
-            'top': '',
-            'verticalAlign': '',
-            'visibility': '',
-            'width': '',
-            'wordSpacing': '',
-            'zIndex': ''
-        }
+        'transform':{},
+        'css':{}
     }, options);
-    var property = jQuery.extend(property,options);
 
 /***Object.assign()方法polyfill函数***<Object.assign()'s polyfill>***/
     var oAssignPollyFill = function(){
@@ -128,20 +67,66 @@ $.fn.zFrameAnimate = function(options){
         $(".z-frame .transition").css(initArg);
         $(".z-frame .transition").css(initWkArg);
     });
+
+/******创建有控制权的对象***<creat a controller object>***/
+    var commander;
+    var commanderToggler = property.toggler;
+    if (commanderToggler == "self"){
+        $commander = jQuery.extend({}, $this);
+    }else if(commanderToggler !="" && property.toggler != null){
+        $commander = $(commanderToggler);
+    }
+
 /******获得触发的事件类型***<Get the trigger event>***/
+/******事件绑定在“控制者”***<event is binded on controller>***/
     if(property.action=="hover"){
-        $($this).on("mouseenter",function(){
+        $($commander).on("mouseenter",function(){
             playScript($this);
         });
-        $($this).on("mouseleave",function(){
+        $($commander).on("mouseleave",function(){
+            resetScript($this);
+        });
+    }else if(property.action=="focus"){
+        $($commander).on("focusin",function(){
+            playScript($this);
+        });
+        $($commander).on("focusout",function(){
             resetScript($this);
         });
     }else if(property.action=="click"){
-        $($this).on("click",function(){
+        $($commander).on("click",function(){
             playScript($this);
         });
+    }else if(property.action=="dblclick"){
+        $($commander).on("dblclick",function(){
+            playScript($this);
+        });
+    }else if(property.action=="mousemove"){
+        $(window).on("mousemove",function(){
+            playScript($this);
+        });
+    }else if(property.action=="change"){
+        $($commander).on("change",function(){
+            playScript($this);
+        });
+    }else if(property.action=="load"){
+        $($commander).on("load",function(){
+            playScript($this);
+        });
+    }else{
+        alert("The action: '" + property.action + "' is not supported!");
     }
 
+/******创建复位的对象***<creat a reset object>***/
+    var reseterButton;
+    var reseterName = property.reseter;
+    if(reseterName != "" && reseterName != null){
+        $reseterButton = $(reseterName);
+
+        $($reseterButton).on("click",function(){
+            resetScript($this);
+        });
+    }
 /******Object.assign()是ES6方法，运行polyfill函数支持safari***<run polyfill because Object.assign() is a ES6 function>***/
         oAssignPollyFill();
 
@@ -154,16 +139,6 @@ $.fn.zFrameAnimate = function(options){
     var playScript = function($this){
         var transformItem = property.transform;
         var cssItem = property.css;
-
-/******删除null键值对***<Delete key-value pair which the value is of type Null & "">***/
-//console.log("Before:", JSON.stringify(transform, null, 2));
-//        Object.keys(transformItem).forEach(function(key) {
-//          var value = transformItem[key];
-//          if (value === "" || value === null) {
-//            delete transformItem[key];
-//          }
-//        });
-//console.log("After:", JSON.stringify(transform, null, 2));
 
 /******将transform参数中键值对转换成字符串，以便修改成style能识别的内容***<{transform} key-value pair transform to a string for html style recognition>***/
         var transformList = JSON.stringify(property.transform);
@@ -179,55 +154,21 @@ $.fn.zFrameAnimate = function(options){
     }
 
 /******针对hover, focus等事件做一个复位的方法***<reset for the event such as hover, focus and so on>***/
-var cssReset = {
-       'backgroundColor': '',
-       'backgroundPosition': '',
-       'borderBottomColor': '',
-       'borderBottomWidth': '',
-       'borderLeftColor': '',
-       'borderLeftWidth': '',
-       'borderRightColor': '',
-       'borderRightWidth': '',
-       'borderTopColor': '',
-       'borderTopWidth': '',
-       'bottom': '',
-       'clip': '',
-       'color': '',
-       'fontSize': '',
-       'fontWeight': '',
-       'height': '',
-       'left': '',
-       'letterSpacing': '',
-       'lineHeight': '',
-       'marginBottom': '',
-       'marginLeft': '',
-       'marginRight': '',
-       'marginTop': '',
-       'maxHeight': '',
-       'maxWidth': '',
-       'minHeight': '',
-       'minWidth': '',
-       'opacity': '',
-       'outlineColor': '',
-       'outlineWidth': '',
-       'paddingBottom': '',
-       'paddingLeft': '',
-       'paddingRight': '',
-       'paddingTop': '',
-       'right': '',
-       'textIndent': '',
-       'textShadow': '',
-       'top': '',
-       'verticalAlign': '',
-       'visibility': '',
-       'width': '',
-       'wordSpacing': '',
-       'zIndex': ''
-    };
-
-    var resetTransform = {"transform":"none","-webkit-transform":"none"};
-    var resetObj = Object.assign(resetTransform, cssReset);
     var resetScript = function($this){
+    /******完整复制一个css对象并删除其值***clone the css object include it's child object and delete value***/
+    var cssItem = jQuery.extend(true, {}, property.css);
+    //console.log("Before:", JSON.stringify(cssItem, null, 2));
+            Object.keys(cssItem).forEach(function(key) {
+              var value = cssItem[key];
+              if (value !== "" || value !== null) {
+                cssItem[key] = "";
+              }
+            });
+    //console.log("After:", JSON.stringify(cssItem, null, 2));
+        var cssReset = cssItem;
+        var resetTransform = {"transform":"none","-webkit-transform":"none"};
+        var resetObj = Object.assign(resetTransform, cssReset);
+
         $($this).css(resetObj);
     }
 });
