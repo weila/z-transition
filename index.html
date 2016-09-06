@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+	<head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <link rel="stylesheet" href="z-frame-animate.css">
+        <title></title>
+	</head>
+	<body>
+    <div class="transition">hehe</div>
+    <div class="z-frame">
+        <div class="neighbor-post haha">
+            <span class="title">Previous</span>
+            <span class="information">haha</span>
+        </div>
+        <div class="neighbor-post hehe">
+            <span class="title">Next</span>
+            <span class="information">hehe</span>
+        </div>
+    </div>
+    <!--<script src="01.js"></script>-->
+    <script src="jquery-2.2.0.js"></script>
+    <script src="z-frame-transition.js"></script>
+    <script>
+    $(".neighbor-post").zFrameAnimate({
+        'action': 'hover',
+        'perspective': '4000px',
+        'perspectiveOrigin': 'top',
+        'style': 'preserve-3d',
+        'origin': 'center',
+        'transition':{
+            'property': 'all',
+            'duration': '0.6s',
+            'function': 'linear',
+        },
+        'css':{
+            'width': '80px',
+            'opacity': '0'
+        },
+        'transform':{
+            'translateZ': '-18px',
+            'rotateX': '90deg'
+            }
+
+    });
+    </script>
+	</body>
+</html>
