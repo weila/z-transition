@@ -4,7 +4,7 @@ $(".pages").zFrameAnimate({
     'perspectiveOrigin': 'top',
     'style': 'preserve-3d',
     'origin': 'center',
-    'toggler': '.wawa',
+    'starter': '.wawa',
     'reseter': '.bibi',
     'transition':{
         'property': 'all',
@@ -23,7 +23,6 @@ $(".pages").zFrameAnimate({
 $(".textA").zFrameAnimate({
     'action': 'click',
     'toggler': '.gogo',
-    'reseter': '.gigi',
     'css':{
         'background-color': '#f00',
         'border-radius': '100px'

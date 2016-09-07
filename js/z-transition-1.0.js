@@ -3,7 +3,8 @@ $.fn.zFrameAnimate = function(options){
 /***默认的选项值***<Default option arguments!>***/
     var property = $.extend({
         'action': 'click',
-        'toggler': 'self',
+        'toggler': 'self',/******设置toggler初始状态，用户没有设定toggler和starter的情况下，toggler起作用<initial toggler value, if neither 'toggler' nor 'starter' has a custom value, toggle works!>***/
+        'starter': '',
         'reseter': '',
         'style': 'preserve-3d',
         'origin': 'center',
@@ -71,14 +72,81 @@ $.fn.zFrameAnimate = function(options){
 /******创建有控制权的对象***<creat a controller object>***/
     var commander;
     var commanderToggler = property.toggler;
+    var starter;
+    var commanderStarter = property.starter;
+
+    if (commanderStarter == "self"){
+        $starter = jQuery.extend({}, $this);
+    }else if(commanderStarter !="" && property.toggler != null){
+        $starter = $(commanderStarter);
+    }
+
     if (commanderToggler == "self"){
         $commander = jQuery.extend({}, $this);
     }else if(commanderToggler !="" && property.toggler != null){
         $commander = $(commanderToggler);
     }
 
-/******获得触发的事件类型***<Get the trigger event>***/
-/******事件绑定在“控制者”***<event is binded on controller>***/
+/******获得触发的事件类型***<Get the event>***/
+/******事件绑定***<event is binded on a controller>***/
+/******先判断starter，没有自定义值再判断toggler,两个都没有采用toggle初始值<Determine 'starter' value first, then determine 'toggler', if neither 'starter' nor 'toggler' has a custom value, 'toggler' initial value works!>***/
+if(commanderStarter !="" && commanderStarter != null){
+    var togglerStatus = 0;
+    if(property.action=="hover"){
+        $($starter).on("mouseenter",function(){
+            playScript($this);
+        });
+        $($starter).on("mouseleave",function(){
+            resetScript($this);
+        });
+    }else if(property.action=="focus"){
+        $($starter).on("focusin",function(){
+            playScript($this);
+        });
+        $($starter).on("focusout",function(){
+            resetScript($this);
+        });
+    }else if(property.action=="click"){
+        $($starter).on("click",function(){
+            if(togglerStatus == 0){
+                playScript($this);
+                togglerStatus = 1;
+            }else{
+                resetScript($this);
+                togglerStatus = 0;
+            }
+        });
+    }else if(property.action=="dblclick"){
+        $($starter).on("dblclick",function(){
+            if(togglerStatus == 0){
+                playScript($this);
+                togglerStatus = 1;
+            }else{
+                resetScript($this);
+                togglerStatus = 0;
+            }
+        });
+    }else if(property.action=="mousemove"){
+        $(window).on("mousemove",function(){
+            playScript($this);
+        });
+    }else if(property.action=="change"){
+        $($starter).on("change",function(){
+            playScript($this);
+        });
+    }else if(property.action=="load"){
+        $(window).load(function(){
+            playScript($this);
+        });
+    }else if(property.action=="scroll"){
+            $(window).scroll(function (){
+                playScript($this);
+            });
+    }else{
+        alert("The action: '" + property.action + "' is not supported!");
+    }
+}else if(commanderToggler !="" && commanderToggler != null){
+    var togglerStatus = 0;
     if(property.action=="hover"){
         $($commander).on("mouseenter",function(){
             playScript($this);
@@ -95,11 +163,23 @@ $.fn.zFrameAnimate = function(options){
         });
     }else if(property.action=="click"){
         $($commander).on("click",function(){
-            playScript($this);
+            if(togglerStatus == 0){
+                playScript($this);
+                togglerStatus = 1;
+            }else{
+                resetScript($this);
+                togglerStatus = 0;
+            }
         });
     }else if(property.action=="dblclick"){
         $($commander).on("dblclick",function(){
-            playScript($this);
+            if(togglerStatus == 0){
+                playScript($this);
+                togglerStatus = 1;
+            }else{
+                resetScript($this);
+                togglerStatus = 0;
+            }
         });
     }else if(property.action=="mousemove"){
         $(window).on("mousemove",function(){
@@ -110,19 +190,22 @@ $.fn.zFrameAnimate = function(options){
             playScript($this);
         });
     }else if(property.action=="load"){
-        $($commander).on("load",function(){
+        $(window).load(function(){
             playScript($this);
         });
+    }else if(property.action=="scroll"){
+            $(window).scroll(function (){
+                playScript($this);
+            });
     }else{
         alert("The action: '" + property.action + "' is not supported!");
     }
-
+}
 /******创建复位的对象***<creat a reset object>***/
     var reseterButton;
     var reseterName = property.reseter;
     if(reseterName != "" && reseterName != null){
         $reseterButton = $(reseterName);
-
         $($reseterButton).on("click",function(){
             resetScript($this);
         });
